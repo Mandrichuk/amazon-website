@@ -183,6 +183,7 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
 
     orderSummaryMath(cart.length);
 
+    location.reload();
   });
 });
 
