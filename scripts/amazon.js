@@ -104,22 +104,40 @@ document.querySelectorAll('.js-add-to-cart').forEach((btn) => {
 function findBySearch(value) {
   // * cards show by the input text  
   let coincidenceCount = 0;
+  let visibleProductCount = 0;
   
   products.forEach(product => {
     const productName = product.name.toLowerCase();
     const productKeywords = product.keywords;
 
+    const resultText = document.querySelector('.results-for-text');
+    const noResultText = document.querySelector('.no-results-text');
+
+    resultText.classList.add('results-for-text-invisible');
+    noResultText.classList.add('no-results-text-invisible');
+
 
     let isVisible = productName.includes(value);
 
+    if (isVisible) visibleProductCount++;
 
+    
     if (!isVisible) {
       productKeywords.forEach(keyword => {
         if (keyword === value) {
           isVisible = true;
-          coincidenceCount += 1;
+          coincidenceCount++;
         }
       });
+
+      if (coincidenceCount > 0) {
+        resultText.classList.remove('results-for-text-invisible');
+        resultText.innerHTML = `Results for: "${value}"`; 
+      } 
+      else if (coincidenceCount <= 0 && visibleProductCount <= 0) {
+        noResultText.classList.remove('no-results-text-invisible');
+        document.querySelector('.no-results-text').innerHTML = `Sorry there are no results for "${value}"`;
+      }
     }
     
 
