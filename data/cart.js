@@ -51,6 +51,12 @@ export function deleteFromCart(removeId) {
   saveToStorage();
 }
 
+export function deleteAllFromCart() {
+  cart = [];
+
+  saveToStorage();
+}
+
 
 export function productQuantityChange(userQuantity, productId) {
   cart.forEach((cartProduct) => {
