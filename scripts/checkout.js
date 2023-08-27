@@ -53,8 +53,6 @@ if (window.location.pathname.includes('checkout.html')) {
     
     document.querySelector('.js-order-total').innerHTML = '$' + (totalFinal).toFixed(2);
     localStorage.setItem('totalCost', totalFinal);
-    console.log(localStorage.getItem('totalCost'));
-
   }
   
   orderSummaryMath(cart.length);
