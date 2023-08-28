@@ -74,14 +74,21 @@
             <div class="js-order-total"></div>
           </div>
 
-          <a href="orders.html" class="orders-link">
-            <button class="place-order-button button-primary">
+          <a href="orders.html" class="orders-link" data-orders-link>
+            <button class="place-order-button button-primary" data-place-order-button>
               Place your order
             </button>
           </a>
         </div>
       </div>
+      <p class="cart-empty-text" data-cart-empty-text>Your cart is empty.</p>
+      <a href="amazon.html" class="shop-link">
+        <button class="view-products-btn" data-view-products-btn>
+          View products
+        </button>
+      </a>
     </div>
+
 
     <script type="module" src="scripts/checkout.js"></script>
   </body>

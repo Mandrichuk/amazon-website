@@ -16,6 +16,7 @@ function saveToStorage() {
   localStorage.setItem('cart', JSON.stringify(cart))
 }
 
+
 export function addToCart(productId, productValue) {
   productValue = Number(productValue);
   let productExists;

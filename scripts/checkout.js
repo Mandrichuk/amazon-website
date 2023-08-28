@@ -5,6 +5,11 @@ import {cartTotalQuantity} from './utils/total.js';
 import {getDate} from './utils/time.js';
 import {createID} from './utils/createID.js';
 
+const cartEmptyText = document.querySelector('[data-cart-empty-text]');
+const viewProductsBtn = document.querySelector('[data-view-products-btn]');
+
+const orderLink = document.querySelector('[data-orders-link]');
+const placeOrderBtn = document.querySelector('[data-place-order-button]');
 
 export let totalCost = localStorage.getItem('totalCost');
 
@@ -14,6 +19,15 @@ if (!totalCost) {
 
 
 if (window.location.pathname.includes('checkout.html')) {
+
+  if (cart.length === 0) {
+    cartEmptyText.classList.add('cart-empty-text-visible');
+    viewProductsBtn.classList.add('view-products-btn-visible');
+
+    orderLink.classList.add('orders-link-unable');
+    placeOrderBtn.classList.add('place-order-button-unable');
+  }
+
   // * order summary order summary order summary order summary 
   
   function orderSummaryMath(length) {

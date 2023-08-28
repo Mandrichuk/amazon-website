@@ -1,4 +1,4 @@
-import { cart, deleteAllFromCart } from '../data/cart.js';
+import { cart, deleteAllFromCart, addToCart } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { order } from './checkout.js';
 import { cartTotalQuantity } from './utils/total.js';
@@ -32,7 +32,7 @@ orders.forEach(order => {
           <img src="${product.image}">
         </div>
         
-        <div class="product-details">
+        <div class="product-details" data-product-details-${product.id}>
           <div class="product-name">
             ${product.name}
           </div>
@@ -42,7 +42,7 @@ orders.forEach(order => {
           <div class="product-quantity">
             Quantity: ${orderProduct.quantity}
           </div>
-          <button class="buy-again-button button-primary">
+          <button class="buy-again-button button-primary" data-product-id="${product.id}" data-product-quantity="${orderProduct.quantity}">
             <img class="buy-again-icon" src="images/icons/buy-again.png">
             <span class="buy-again-message">Buy it again</span>
           </button>
@@ -95,3 +95,34 @@ if (referrer === 'http://127.0.0.1:5500/checkout.html') {
 
 
 document.querySelector('.cart-quantity').innerHTML = cartTotalQuantity();
+
+// * buy it again btn
+
+document.querySelectorAll('.buy-again-button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const productId = btn.dataset.productId;
+    const productQuantity = btn.dataset.productQuantity;
+    
+    products.forEach(product => {
+      if (productId === product.id) {
+        addToCart(productId, productQuantity);
+        document.querySelector('.cart-quantity').innerHTML = cartTotalQuantity();
+
+        const buyAgainBtn = document.querySelector(`[data-product-id="${productId}"]`);
+        console.log(buyAgainBtn);
+        
+        buyAgainBtn.innerHTML = '&#10003; Added';
+        setTimeout(() => {
+          buyAgainBtn.innerHTML = `
+          <img class="buy-again-icon" src="images/icons/buy-again.png">
+          <span class="buy-again-message">Buy it again</span>
+          `;
+          console.log(buyAgainBtn);
+        }, 2000);
+
+      }
+    });
+
+
+  });
+});
