@@ -42,7 +42,7 @@ orders.forEach(order => {
           <div class="product-quantity">
             Quantity: ${orderProduct.quantity}
           </div>
-          <button class="buy-again-button button-primary" data-product-id="${product.id}" data-product-quantity="${orderProduct.quantity}">
+          <button class="buy-again-button button-primary" data-product-id="${product.id}" data-order-id="${order.id}" data-product-quantity="${orderProduct.quantity}">
             <img class="buy-again-icon" src="images/icons/buy-again.png">
             <span class="buy-again-message">Buy it again</span>
           </button>
@@ -102,27 +102,33 @@ document.querySelectorAll('.buy-again-button').forEach(btn => {
   btn.addEventListener('click', () => {
     const productId = btn.dataset.productId;
     const productQuantity = btn.dataset.productQuantity;
+    const orderId = btn.dataset.orderId;
     
     products.forEach(product => {
       if (productId === product.id) {
         addToCart(productId, productQuantity);
         document.querySelector('.cart-quantity').innerHTML = cartTotalQuantity();
-
-        const buyAgainBtn = document.querySelector(`[data-product-id="${productId}"]`);
-        console.log(buyAgainBtn);
         
-        buyAgainBtn.innerHTML = '&#10003; Added';
-        setTimeout(() => {
-          buyAgainBtn.innerHTML = `
-          <img class="buy-again-icon" src="images/icons/buy-again.png">
-          <span class="buy-again-message">Buy it again</span>
-          `;
-          console.log(buyAgainBtn);
-        }, 2000);
 
+        document.querySelectorAll(`[data-product-id="${productId}"]`)
+          .forEach(buyBtn => {
+
+            const btnProductId = buyBtn.dataset.productId;
+            const btnOrderId = buyBtn.dataset.orderId;
+
+            if (btnProductId === productId && btnOrderId === orderId) {
+              
+              buyBtn.innerHTML = '&#10003; Added';
+              setTimeout(() => {
+                buyBtn.innerHTML = `
+                <img class="buy-again-icon" src="images/icons/buy-again.png">
+                <span class="buy-again-message">Buy it again</span>
+                `;
+
+            }, 2000);
+          }
+        });
       }
     });
-
-
   });
 });

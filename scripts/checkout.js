@@ -28,9 +28,9 @@ if (window.location.pathname.includes('checkout.html')) {
     placeOrderBtn.classList.add('place-order-button-unable');
   }
 
-  // * order summary order summary order summary order summary 
+  // * order summary 
   
-  function orderSummaryMath(length) {
+  function orderSummaryMath(length, deliveryCost) {
     let orderSummary = 0;
     let shippingHandling = 0;
     let summaryAndShipping = 0;
@@ -51,7 +51,7 @@ if (window.location.pathname.includes('checkout.html')) {
       
       
       orderSummary = orderSummary / 100;
-      shippingHandling = 0;
+      shippingHandling = deliveryCost;
       
       summaryAndShipping = Number(orderSummary) + Number(shippingHandling);
       summaryTax = summaryAndShipping / 10;
@@ -69,9 +69,9 @@ if (window.location.pathname.includes('checkout.html')) {
     localStorage.setItem('totalCost', totalFinal);
   }
   
-  orderSummaryMath(cart.length);
+  orderSummaryMath(cart.length, 0);
   
-  // * products grid products grid products grid products grid
+  // * products grid 
   
   function generatingHTML(cart) {
   
@@ -87,6 +87,10 @@ if (window.location.pathname.includes('checkout.html')) {
           matchingProduct = product;
         }
       });
+
+      const freeDelivery = 0;
+      const fastDelivery = 4.99;
+      const priorityDelivery = 9.99;
   
       html += `
         <div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
@@ -133,7 +137,7 @@ if (window.location.pathname.includes('checkout.html')) {
             <div class="delivery-option">
               <input type="radio" checked
                 class="delivery-option-input"
-                name="delivery-option-${matchingProduct.id}">
+                name="delivery-option-${matchingProduct.id}" data-delivery-cost="${freeDelivery}" data-product-id="${matchingProduct.id}">
               <div>
                 <div class="delivery-option-date">
                   Tuesday, June 21
@@ -146,26 +150,26 @@ if (window.location.pathname.includes('checkout.html')) {
             <div class="delivery-option">
               <input type="radio"
                 class="delivery-option-input"
-                name="delivery-option-${matchingProduct.id}">
+                name="delivery-option-${matchingProduct.id}" data-delivery-cost="${fastDelivery}" data-product-id="${matchingProduct.id}">
               <div>
                 <div class="delivery-option-date">
                   Wednesday, June 15
                 </div>
                 <div class="delivery-option-price">
-                  $4.99 - Shipping
+                  $${fastDelivery} - Shipping
                 </div>
               </div>
             </div>
             <div class="delivery-option">
               <input type="radio"
                 class="delivery-option-input"
-                name="delivery-option-${matchingProduct.id}">
+                name="delivery-option-${matchingProduct.id}" data-delivery-cost="${priorityDelivery}" data-product-id="${matchingProduct.id}">
               <div>
                 <div class="delivery-option-date">
                   Monday, June 13
                 </div>
                 <div class="delivery-option-price">
-                  $9.99 - Shipping
+                  $${priorityDelivery} - Shipping
                 </div>
               </div>
             </div>
@@ -178,17 +182,59 @@ if (window.location.pathname.includes('checkout.html')) {
   }
   
   
-  document.querySelector('.order-summary').innerHTML = generatingHTML(cart);
-  
-  function quantityUpdate() {
-    document.querySelector('.js-items-quantity-title').innerHTML = cartTotalQuantity();
-    document.querySelector('.js-items-quantity').innerHTML = cartTotalQuantity();
-  }
+document.querySelector('.order-summary').innerHTML = generatingHTML(cart);
+
+
+
+function deliveriesCostCount() {
+  const deliveryOptions = document.querySelectorAll(".delivery-option-input");
+
+  let deliveriesArray = [];
+  deliveryOptions.forEach(deliveryOption => {
+    deliveryOption.addEventListener('change', () => {
+      if (deliveryOption.checked) {
+        const deliveryCost = Number(deliveryOption.dataset.deliveryCost);
+        const deliveryProductId = deliveryOption.dataset.productId;
+
+        const existingIndex = deliveriesArray.findIndex(item => item.id === deliveryProductId);
+
+        if (existingIndex !== -1) {
+          deliveriesArray[existingIndex].cost = deliveryCost;
+        }
+        else {
+          deliveriesArray.push({id: deliveryProductId, cost: deliveryCost});
+        }
+
+        let allDeliveriesCost = 0;
+        deliveriesArray.forEach(delivery => {
+          allDeliveriesCost += delivery.cost;
+        });
+
+        orderSummaryMath(cart.length, allDeliveriesCost);
+
+        return allDeliveriesCost;
+      }
+    });
+  });
+}
+
+deliveriesCostCount()
+
+
+
+
+
+// * quantity update
+
+function quantityUpdate() {
+  document.querySelector('.js-items-quantity-title').innerHTML = cartTotalQuantity();
+  document.querySelector('.js-items-quantity').innerHTML = cartTotalQuantity();
+}
   
   
   quantityUpdate();
   
-  // * delete link delete link delete link delete link 
+  // * delete link 
   
   document.querySelectorAll('.js-delete-link').forEach((link) => {
     link.addEventListener('click', () => {
@@ -205,7 +251,8 @@ if (window.location.pathname.includes('checkout.html')) {
       document.querySelector('.js-items-quantity-title').innerHTML = cartTotalQuantity();
       document.querySelector('.js-items-quantity').innerHTML = cartTotalQuantity();
   
-      orderSummaryMath(cart.length);
+      orderSummaryMath(cart.length, 0);
+      deliveriesCostCount();
   
       location.reload();
     });
@@ -213,7 +260,7 @@ if (window.location.pathname.includes('checkout.html')) {
   
   
   
-  // * update link update link update link update link 
+  // * update link 
   
   document.querySelectorAll('.js-update-link').forEach((link) => {
     link.addEventListener('click', () => {
@@ -231,7 +278,7 @@ if (window.location.pathname.includes('checkout.html')) {
   
   
   
-  // * save link save link save link save link 
+  // * save link 
   
   function userInputValidate(userInput, productId) {
   
@@ -270,7 +317,8 @@ if (window.location.pathname.includes('checkout.html')) {
       updateContainer.classList.remove('invisible-update-quantity-link');
   
   
-      orderSummaryMath(cart.length);
+      orderSummaryMath(cart.length, 0);
+      deliveriesCostCount();
   
       quantityUpdate();
       productQuantity(productId);
