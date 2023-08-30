@@ -1,9 +1,10 @@
-import {cart, deleteFromCart, productQuantityChange} from '../data/cart.js';
+import {cart, deleteFromCart, productQuantityChange, fromFileToStorage } from '../data/cart.js';
 import {products} from '../data/products.js';
 import {formatCurrency} from './utils/money.js';
 import {cartTotalQuantity} from './utils/total.js';
 import {getDate} from './utils/time.js';
 import {createID} from './utils/createID.js';
+import {DeliveryDate} from './utils/delivery.js';
 
 const cartEmptyText = document.querySelector('[data-cart-empty-text]');
 const viewProductsBtn = document.querySelector('[data-view-products-btn]');
@@ -17,6 +18,7 @@ if (!totalCost) {
   totalCost = 0;
 }
 
+export let order = createOrder(cart); 
 
 if (window.location.pathname.includes('checkout.html')) {
 
@@ -78,10 +80,11 @@ if (window.location.pathname.includes('checkout.html')) {
     let html = '';
   
     cart.forEach((cartItem) => {
+
       const productId = cartItem.productId;
-  
+      
       let matchingProduct;
-  
+      
       products.forEach((product) => {
         if (productId === product.id) {
           matchingProduct = product;
@@ -94,8 +97,8 @@ if (window.location.pathname.includes('checkout.html')) {
   
       html += `
         <div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
-        <div class="delivery-date">
-          Delivery date: Tuesday, June 21
+        <div class="delivery-date" data-delivery-date-${matchingProduct.id}>
+        Delivery date: ${DeliveryDate(cartItem.preparingDate, 8)}
         </div>
       
         <div class="cart-item-details-grid">
@@ -140,7 +143,7 @@ if (window.location.pathname.includes('checkout.html')) {
                 name="delivery-option-${matchingProduct.id}" data-delivery-cost="${freeDelivery}" data-product-id="${matchingProduct.id}">
               <div>
                 <div class="delivery-option-date">
-                  Tuesday, June 21
+                ${DeliveryDate(cartItem.preparingDate, 8)}
                 </div>
                 <div class="delivery-option-price">
                   FREE Shipping
@@ -153,7 +156,7 @@ if (window.location.pathname.includes('checkout.html')) {
                 name="delivery-option-${matchingProduct.id}" data-delivery-cost="${fastDelivery}" data-product-id="${matchingProduct.id}">
               <div>
                 <div class="delivery-option-date">
-                  Wednesday, June 15
+                ${DeliveryDate(cartItem.preparingDate, 3)}
                 </div>
                 <div class="delivery-option-price">
                   $${fastDelivery} - Shipping
@@ -166,7 +169,7 @@ if (window.location.pathname.includes('checkout.html')) {
                 name="delivery-option-${matchingProduct.id}" data-delivery-cost="${priorityDelivery}" data-product-id="${matchingProduct.id}">
               <div>
                 <div class="delivery-option-date">
-                  Monday, June 13
+                ${DeliveryDate(cartItem.preparingDate, 1)}
                 </div>
                 <div class="delivery-option-price">
                   $${priorityDelivery} - Shipping
@@ -195,6 +198,21 @@ function deliveriesCostCount() {
       if (deliveryOption.checked) {
         const deliveryCost = Number(deliveryOption.dataset.deliveryCost);
         const deliveryProductId = deliveryOption.dataset.productId;
+        const deliveryDateText = document.querySelector(`[data-delivery-date-${deliveryProductId}]`);
+
+        let deliveryDays = '';
+
+        switch (deliveryCost) {
+          case 0:
+            deliveryDays = 8;
+            break;
+          case 4.99:
+            deliveryDays = 3;
+            break;
+          case 9.99:
+            deliveryDays = 1;
+            break;
+        }
 
         const existingIndex = deliveriesArray.findIndex(item => item.id === deliveryProductId);
 
@@ -212,15 +230,23 @@ function deliveriesCostCount() {
 
         orderSummaryMath(cart.length, allDeliveriesCost);
 
-        return allDeliveriesCost;
+        cart.forEach(product => {
+          if (product.productId === deliveryProductId) {
+            const deliveringDate = DeliveryDate(product.preparingDate, deliveryDays);
+            product.deliveringDate = deliveringDate;
+
+            deliveryDateText.innerHTML = "Delivery date: " + deliveringDate;
+          }
+        });
+
+        createOrder(cart);
       }
     });
   });
 }
 
-deliveriesCostCount()
 
-
+deliveriesCostCount();
 
 
 
@@ -327,16 +353,25 @@ function quantityUpdate() {
 }
 
 
-const currentDate = getDate();
-const orderID = createID();
+function createOrder(cart) {
+  const currentDate = getDate();
+  const orderID = createID();
+  totalCost = (Number(totalCost)).toFixed(2);
+  
+  cart.forEach(product => {
+    if (product.deliveringDate === '') {
+      const deliveringDate = DeliveryDate(product.preparingDate, 8);
+      product.deliveringDate = deliveringDate;
+    }
+  });
 
+  fromFileToStorage(cart);
 
-totalCost = (Number(totalCost)).toFixed(2);
-
-
-export let order = {
-  cart: cart,
-  total: totalCost,
-  date: currentDate,
-  id: orderID
-};
+  let order = {
+    cart: cart,
+    total: totalCost,
+    date: currentDate,
+    id: orderID
+  };
+  return order;
+}
