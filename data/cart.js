@@ -1,3 +1,5 @@
+import { getDate } from '../scripts/utils/time.js'
+
 export let cart = JSON.parse(localStorage.getItem('cart'));
 
 if  (!cart) {
@@ -13,7 +15,11 @@ cart = [{
 
 
 function saveToStorage() {
-  localStorage.setItem('cart', JSON.stringify(cart))
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+export function fromFileToStorage(cart) {
+  localStorage.setItem('cart', JSON.stringify(cart));
 }
 
 
@@ -32,7 +38,9 @@ export function addToCart(productId, productValue) {
   } else {
     cart.push({
       productId: productId,
-      quantity: productValue
+      quantity: productValue,
+      preparingDate: getDate(),
+      deliveringDate: ''
     });
   }
   saveToStorage();
