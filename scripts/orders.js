@@ -13,8 +13,7 @@ let orders = JSON.parse(localStorage.getItem('orders'));
 
 if (!orders) orders = [];
 
-if (order.cart.length > 0 && referrer.includes('checkout')) { 
-  console.log('sdfsdf')
+if (order.cart.length > 0 && referrer.includes('checkout')) {
   orders.push(order);
   orders.reverse();
 }
@@ -59,36 +58,37 @@ orders.forEach(order => {
           Track package
           </button>
           </a>
-          </div>
-          `;
-        }
-      });
-      
+        </div>
+      `;
+    }
+  });
+
   let orderHTML = `
-  <div class="order-container">
-  <div class="order-header">
-  <div class="order-header-left-section">
-  <div class="order-date">
-  <div class="order-header-label">Order Placed:</div>
-      <div>${order.date}</div>
-      </div>
-      <div class="order-total">
-      <div class="order-header-label">Total:</div>
-      <div>$${order.total}</div>
-      </div>
-      </div>
-      <div class="order-header-right-section">
-      <div class="order-header-label">Order ID:</div>
-      <div>${order.id}</div>
-      </div>
+    <div class="order-container">
+      <div class="order-header">
+        <div class="order-header-left-section">
+          <div class="order-date">
+            <div class="order-header-label">Order Placed:</div>
+            <div>${order.date}</div>
+          </div>
+          <div class="order-total">
+            <div class="order-header-label">Total:</div>
+            <div>$${order.total}</div>
+          </div>
+        </div>
+        <div class="order-header-right-section">
+          <div class="order-header-label">Order ID:</div>
+          <div>${order.id}</div>
+        </div>
       </div>
       <div class="order-details-grid">
-      ${orderDetailsHTML}
+        ${orderDetailsHTML}
       </div>
-      </div>
-      `;
-    
-    ordersGrid.innerHTML += orderHTML;
+    </div>
+  `;
+
+  ordersGrid.innerHTML += orderHTML;
+
 });
 
 localStorage.setItem('orders', JSON.stringify(orders));
