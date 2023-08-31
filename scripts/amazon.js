@@ -179,3 +179,28 @@ searchBtn.addEventListener('click', searchBtnOnClick);
 
 
 searchBtnOnClick();
+
+
+// * scroll to top
+
+const scrollToTopButton = document.querySelector('.scrollToTopButton');
+let lastScrollY = window.scrollY;
+
+document.addEventListener('scroll', () => {
+  const currentScrollY = window.scrollY;
+
+  if (currentScrollY < lastScrollY && currentScrollY > 550) {
+    scrollToTopButton.style.display = "block";
+  }
+  else {
+    scrollToTopButton.style.display = "none";
+  }
+  lastScrollY = currentScrollY;
+});
+
+scrollToTopButton.addEventListener('click', () => {
+  window.scrollTo({
+    top: 0, 
+    behavior: "smooth"
+  })
+});

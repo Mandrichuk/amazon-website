@@ -1,3 +1,8 @@
+a {
+  color: white;
+  text-decoration: none;
+}
+
 .main {
   margin-top: 60px;
 }
@@ -154,7 +159,6 @@
   margin: 80px 20px 0px 20px;
   padding-bottom: 20px; 
   
-  vertical-align: middle;
   border-bottom: 1px solid rgb(189, 189, 189);
   
   font-size: 18px;
@@ -182,4 +186,51 @@
 
 .no-results-text-invisible {
   display: none;
+}
+
+
+
+.amazon-footer {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
+  
+  justify-content: center;
+  align-items: center;
+}
+
+.to-top-btn {
+  border: none;
+  background-color: rgb(252, 212, 12);
+
+  padding: 13px 150px 10px 150px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+
+  font-size: 15px;
+}
+
+.to-top-btn:hover {
+  background-color: rgb(239, 201, 7);
+}
+
+
+.scrollToTopButton {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.scrollToTopButton:hover {
+  background-color: #555;
 }
