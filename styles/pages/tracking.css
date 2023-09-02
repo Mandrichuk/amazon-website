@@ -77,18 +77,48 @@
   height: 100%;
   background-color: green;
   border-radius: 50px;
-  width: 5%;
   transition: 1s width;
+  width: 1%;
+}
+
+.progress-bar-preparing {
+  width: 5%;
+  animation: progressPreparing 1s ease-in-out forwards;
+}
+
+@keyframes progressPreparing {
+  0% {
+    width: 0; 
+  }
+  100% {
+    width: 5%; 
+  }
 }
 
 .progress-bar-shipped {
   width: 50%;
+  animation: progressShipped 2s ease-in-out forwards;
+}
+
+@keyframes progressShipped {
+  0% {
+    width: 0;
+  }
+  50% {
+    width: 50%;
+  }
 }
 
 .progress-bar-delivered {
   width: 100%;
+  animation: progressDelivered 4s ease-in-out forwards;
 }
 
-.progress-bar-container:hover .progress-bar {
-  width: 100%;
+@keyframes progressDelivered {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
 }
