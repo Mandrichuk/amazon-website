@@ -22,7 +22,7 @@ if (order.cart.length > 0 && referrer.includes('checkout')) {
 }
 
 
-if (referrer !== 'http://127.0.0.1:5500/orders.html') {
+if (currentPagePath.includes('orders')) {
   
   let ordersGrid = document.querySelector('.orders-grid');
   ordersGrid.innerHTML = '';

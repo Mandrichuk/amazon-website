@@ -111,7 +111,7 @@
 
 .progress-bar-delivered {
   width: 100%;
-  animation: progressDelivered 4s ease-in-out forwards;
+  animation: progressDelivered 2s ease-in-out forwards;
 }
 
 @keyframes progressDelivered {

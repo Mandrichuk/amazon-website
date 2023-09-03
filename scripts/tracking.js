@@ -1,9 +1,13 @@
 import { productData } from './orders.js';
 import { products } from '../data/products.js';
+import { cartTotalQuantity } from './utils/total.js'
 import { getDate } from './utils/time.js';
 
 let currentProduct;
 
+
+const hearderCartQuantity = document.querySelector('.cart-quantity');
+hearderCartQuantity.innerHTML = cartTotalQuantity();
 
 const preparingDateComponents = productData.preparingDate.split('/');
 const deliveryDateComponents = productData.deliveryDate.split('/');
@@ -16,8 +20,6 @@ products.forEach(product => {
         currentProduct = product;
     }
 });
-
-// TODO ! create an algorihm that will show the bar progress 
 
 
 const innerHTML = `
@@ -41,13 +43,13 @@ const innerHTML = `
     <img class="product-image" src="${currentProduct.image}">
 
     <div class="progress-labels-container">
-        <div class="progress-label">
+        <div class="progress-label progress-label-preparing">
         Preparing
         </div>
-        <div class="progress-label current-status">
+        <div class="progress-label progress-label-shipped">
         Shipped
         </div>
-        <div class="progress-label">
+        <div class="progress-label progress-label-delivered">
         Delivered
         </div>
     </div>
@@ -89,31 +91,23 @@ deliveryDate = deliveryDate.toDateString();
 currentDate = currentDate.toDateString();
 
 
-console.log("preparing date " + preparingDate);
-console.log("delivery date " + deliveryDate);
-console.log("current date " + currentDate);
-
-
-
 
 const progressBar = document.querySelector('.progress-bar');
 
+const labelPreparing = document.querySelector('.progress-label-preparing');
+const labelShipped = document.querySelector('.progress-label-shipped');
+const labelDelivered = document.querySelector('.progress-label-delivered');
 
-if (currentDate >= deliveryDate) {
-    progressBar.classList.add('progress-bar-delivered');
 
-    console.log('delivered');
-}
-else if (currentDate === preparingDate) {
+if (currentDate === preparingDate) {
     progressBar.classList.add('progress-bar-preparing');
-    
-    console.log('preparing');
+    labelPreparing.classList.add('current-status');
 }
 else if (currentDate < deliveryDate || currentDate > preparingDate) {
     progressBar.classList.add('progress-bar-shipped');
-
-    console.log('shipped');
+    labelShipped.classList.add('current-status');
 }
-else {
-    console.log('nothing');
+else if (currentDate >= deliveryDate) {
+    progressBar.classList.add('progress-bar-delivered');
+    labelDelivered.classList.add('current-status');
 }
